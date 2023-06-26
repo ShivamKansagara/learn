@@ -3,6 +3,7 @@ import './App.css';
 import "./index.css"
 import Shivam from "./Components/Shivam"
 import React,{useState,useEffect } from "react";
+import Search from "./Components/Search";
 function App() {
   const [Image, setImage] = useState([])
   const [term, setterm] = useState('')
@@ -13,11 +14,12 @@ function App() {
       setImage(data.hits);
     })
     .catch(err => console.log(err));
-  },[]);
+  },[term]);
   return (
     <>
     <br />
     <br />
+    <Search searchText={text => setterm(text)}></Search>
     <br />
     <div className='flex justify-center m-2 p-2'>
     <div className=" mx-auto">
