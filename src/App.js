@@ -1,36 +1,51 @@
-import logo from "./logo.svg";
-import "./App.css";
-import "./index.css";
-import Shivam from "./Components/Shivam";
 import React, { useState, useEffect } from "react";
 import Search from "./Components/Search";
+import Shivam from "./Components/Shivam";
+
 function App() {
-  const [Image, setImage] = useState([]);
-  const [term, setterm] = useState("");
+  const [images, setImages] = useState([]);
+  const [term, setTerm] = useState("");
 
   const searchtext = (text) => {
-    setterm(text);
+    setTerm(text);
   };
+
   useEffect(() => {
-    fetch(
-      `https://pixabay.com/api/?key=${process.env.REACT_APP_PIXABAY_API_KEY}&q=${term}&image_type=photo&pretty=true`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setImage(data.hits);
-      })
-      .catch((err) => console.log(err));
+    const fetchImages = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/cards", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ term }),
+        });
+        if (response.ok) {
+          const data = await response.json(); // Await the response.json() method
+          setImages(data.hits); // Assuming the response contains an array of "hits"
+        } else {
+          throw new Error("Failed to fetch images");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (term) {
+      fetchImages();
+    }
   }, [term]);
+
   return (
     <>
       <br />
       <br />
-      <Search searchText={searchtext}></Search>
+      <Search searchText={searchtext} />
       <br />
       <div className="flex justify-center m-2 p-2">
-        <div className=" mx-auto">
+        <div className="mx-auto">
           <div className="grid grid-cols-3 gap-4">
-            {Image.map((image) => (
+            {images.map((image) => (
               <Shivam key={image.id} image={image} />
             ))}
           </div>
