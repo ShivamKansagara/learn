@@ -16,7 +16,7 @@ app.post("/api/cards", async (req, res) => {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    res.json(data);
+    res.json(data); //
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
